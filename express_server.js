@@ -20,7 +20,7 @@ const urlDatabase = {
 };
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  res.redirect("/urls");
 });
 
 app.get("/urls", (req, res) => {
@@ -51,6 +51,12 @@ app.get("/u/:shortURL", (req, res) => {
 app.post("/urls", (req, res) => {
   const newShortCode = generateRandomString();
   urlDatabase[newShortCode] = req.body.longURL;
+  res.redirect('/urls');
+});
+
+app.post("/urls/:id/delete", (req, res) => {
+  delete urlDatabase[req.params.id];
+  res.redirect('/urls');
 });
 
 
