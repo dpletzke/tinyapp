@@ -30,7 +30,6 @@ app.get("/urls", (req, res) => {
     username: req.cookies.username,
     urls: urlDatabase    
   };
-  console.log(templateVars.username);
   res.render("urls_index", templateVars);
 });
 
