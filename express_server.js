@@ -3,30 +3,21 @@ const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
+const { emailLookup, generateRandomString } = require('./helpers');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
 app.set("view engine", "ejs");
-
-function generateRandomString() { 
-  var result = '';
-  while (!result) {
-    result = Math.random().toString(36).substring(2, 8);
-    return result;
-  }
-}
 
 const users = { 
   "userRandomID": {
     id: "userRandomID", 
     email: "user@example.com", 
     password: "purple-monkey-dinosaur"
-  },
+  }
 }
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
 };
 
 app.get("/", (req, res) => {
@@ -38,7 +29,6 @@ app.get("/urls", (req, res) => {
     user: users[req.cookies.user_id],
     urls: urlDatabase    
   };
-  console.log(templateVars);
   res.render("urls_index", templateVars);
 });
 
@@ -51,10 +41,11 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  // const templateVars = {
-  //   users
-  // };
   res.render("register");
+});
+
+app.get("/login", (req, res) => {
+  res.render("login");
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -92,8 +83,16 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  res.cookie('username', req.body.username);
-  res.redirect('/urls');
+  const { email, password } = req.body;
+  const user = emailLookup(users, email);
+
+  if(user && user.password === password) {
+    res.cookie('user_id', user.id);
+    res.redirect('/urls');
+  } else {
+    res.redirect('/login');
+  }
+  
 });
 
 app.post("/logout", (req, res) => {
@@ -103,10 +102,20 @@ app.post("/logout", (req, res) => {
 
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
-  const randId = generateRandomString();
-  users[randId] = { id: randId, email, password };
-  res.cookie('user_id', randId);
-  res.redirect('/urls');
+  
+  if(!email && !password) {
+    res.statusCode = 400;
+    res.redirect('/register');
+  } else if (emailLookup(users, email)) {
+    res.statusCode = 400;
+    res.redirect('/register');
+  } else {
+    const randId = generateRandomString();
+    users[randId] = { id: randId, email, password };
+    res.cookie('user_id', randId);
+    res.redirect('/urls');
+  }
+
 });
 
 
