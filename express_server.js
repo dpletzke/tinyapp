@@ -22,11 +22,6 @@ const users = {
     email: "user@example.com", 
     password: "purple-monkey-dinosaur"
   },
- "user2RandomID": {
-    id: "user2RandomID", 
-    email: "user2@example.com", 
-    password: "dishwasher-funk"
-  }
 }
 
 const urlDatabase = {
@@ -53,11 +48,11 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
-app.get("/urls/register", (req, res) => {
-  /* const templateVars = {
-    username: req.cookies.username,
-  }; */
-  res.render("register");
+app.get("/register", (req, res) => {
+  const templateVars = {
+    users
+  };
+  res.render("register", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -98,6 +93,13 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.clearCookie('username');
+  res.redirect('/urls');
+});
+
+app.post("/register", (req, res) => {
+  const { email, password } = req.body;
+  const randId = generateRandomString();
+  users[randId] = { id: randId, email, password };
   res.redirect('/urls');
 });
 
