@@ -1,11 +1,15 @@
-const urlsForUser = (urlsDatabase, user) => {
+
+/* takes params:
+      urls database,
+      user */
+const urlsForUser = (urlsDatabase, user_id) => {
   const output = {};
-  if (!user) {
+  if (!user_id) {
     return null;
   }
   for (const url in urlsDatabase) {
     const urlOwner = urlsDatabase[url].userID;
-    if (urlOwner === user.id) {
+    if (urlOwner === user_id) {
       output[url] = urlsDatabase[url];
     }
   }
@@ -16,7 +20,7 @@ const urlsForUser = (urlsDatabase, user) => {
 const emailLookup = (users, email) => {
   for (const user in users) {
     if (users[user].email === email) {
-      return users[user];
+      return user;
     }
   }
   return null;
@@ -38,7 +42,8 @@ const testUser = {
 
 const testURLs = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" },
+  fhgklf: { longURL: "https://www.youtube.ca", userID: "asknkd" }
 };
 
 

@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
 const cookieSession =require('cookie-session');
 const bcrypt = require('bcrypt');
 const { emailLookup, generateRandomString, urlsForUser } = require('./helpers');
@@ -34,7 +33,7 @@ app.get("/", (req, res) => {
 
 app.get("/urls", (req, res) => {
   const { user_id } = req.session;
-  const userURLs = urlsForUser(urlDatabase, users[user_id]);
+  const userURLs = urlsForUser(urlDatabase, user_id);
   const templateVars = {
     user: users[user_id],
     userURLs
@@ -123,7 +122,7 @@ app.post("/urls/:id/delete", (req, res) => {
 
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-  const user = emailLookup(users, email);
+  const user = users[emailLookup(users, email)];
 
   if (user && bcrypt.compareSync(password, user.hashedPassword)) {
     req.session['user_id'] = user.id;
