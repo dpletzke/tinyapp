@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 const { emailLookup, generateRandomString, urlsForUser } = require('./helpers');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
@@ -119,7 +120,7 @@ app.post("/login", (req, res) => {
   const { email, password } = req.body;
   const user = emailLookup(users, email);
 
-  if (user && user.password === password) {
+  if (user && bcrypt.compareSync(password, user.hashedPassword)) {
     res.cookie('user_id', user.id);
     res.redirect('/urls');
   } else {
@@ -136,8 +137,8 @@ app.post("/logout", (req, res) => {
 
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
-  
-  if (!email && !password) {
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  if (!email && !hashedPassword) {
     res.statusCode = 400;
     res.redirect('/register');
   } else if (emailLookup(users, email)) {
@@ -145,7 +146,7 @@ app.post("/register", (req, res) => {
     res.redirect('/register');
   } else {
     const randId = generateRandomString();
-    users[randId] = { id: randId, email, password };
+    users[randId] = { id: randId, email, hashedPassword };
     res.cookie('user_id', randId);
     res.redirect('/urls');
   }
