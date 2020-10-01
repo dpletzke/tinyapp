@@ -9,13 +9,13 @@ app.use(cookieParser());
 
 app.set("view engine", "ejs");
 
-const users = { 
+const users = {
   "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
+    id: "userRandomID",
+    email: "user@example.com",
     password: "purple-monkey-dinosaur"
   }
-}
+};
 
 const urlDatabase = {
   example1: { longURL: "https://www.tsn.ca", userID: "user1" },
@@ -31,7 +31,7 @@ app.get("/urls", (req, res) => {
   const userURLs = urlsForUser(urlDatabase, users[user_id]);
   const templateVars = {
     user: users[user_id],
-    userURLs    
+    userURLs
   };
   console.log();
   console.log();
@@ -70,7 +70,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const user = users[user_id];
 
   const templateVars = {
-    user, 
+    user,
     shortURL,
     longURL,
   };
@@ -84,18 +84,18 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  const { user_id: userID } = req.cookies; 
+  const { user_id: userID } = req.cookies;
   const newShortCode = generateRandomString();
   const { longURL } = req.body;
-  urlDatabase[newShortCode] = { longURL, userID }
+  urlDatabase[newShortCode] = { longURL, userID };
   res.redirect('/urls');
 });
 
 app.post("/urls/:id", (req, res) => {
   const { longURL: newLongURL } = req.body;
-  const { id } = req.params
+  const { id } = req.params;
   const { user_id } = req.cookies;
-  if(!user_id) {
+  if (!user_id) {
     res.end('You need to be logged in on the website!\n');
   } else {
     urlDatabase[id].longURL = newLongURL;
@@ -107,7 +107,7 @@ app.post("/urls/:id", (req, res) => {
 app.post("/urls/:id/delete", (req, res) => {
   const { id } = req.params;
   const { user_id } = req.cookies;
-  if(!user_id) {
+  if (!user_id) {
     res.end('You need to be logged in on the website!\n');
   } else {
     delete urlDatabase[id];
@@ -119,7 +119,7 @@ app.post("/login", (req, res) => {
   const { email, password } = req.body;
   const user = emailLookup(users, email);
 
-  if(user && user.password === password) {
+  if (user && user.password === password) {
     res.cookie('user_id', user.id);
     res.redirect('/urls');
   } else {
@@ -137,7 +137,7 @@ app.post("/logout", (req, res) => {
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
   
-  if(!email && !password) {
+  if (!email && !password) {
     res.statusCode = 400;
     res.redirect('/register');
   } else if (emailLookup(users, email)) {

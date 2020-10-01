@@ -1,17 +1,17 @@
 const urlsForUser = (urlsDatabase, user) => {
   const output = {};
-  if(!user) {
+  if (!user) {
     return null;
   }
   for (url in urlsDatabase) {
     const urlOwner = urlsDatabase[url].userID;
-    if(urlOwner === user.id) {
-      output[url] = urlsDatabase[url]; 
+    if (urlOwner === user.id) {
+      output[url] = urlsDatabase[url];
     }
   }
   return output;
 
-}
+};
 
 const emailLookup = (users, email) => {
   for (user in users) {
@@ -20,15 +20,15 @@ const emailLookup = (users, email) => {
     }
   }
   return null;
-}
+};
 
-const generateRandomString = () => { 
+const generateRandomString = () => {
   let result = '';
   while (!result) {
     result = Math.random().toString(36).substring(2, 8);
     return result;
   }
-}
+};
 
 const testUser = {
   id: 'aJ48lW',
@@ -44,4 +44,4 @@ const testURLs = {
 
 // console.log(urlsForUser(testURLs,testUser));
 
-module.exports = { emailLookup, generateRandomString, urlsForUser }
+module.exports = { emailLookup, generateRandomString, urlsForUser };
