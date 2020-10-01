@@ -92,14 +92,25 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:id", (req, res) => {
   const { longURL: newLongURL } = req.body;
   const { id } = req.params
-  urlDatabase[id].longURL = newLongURL;
-  res.redirect('/urls');
+  const { user_id } = req.cookies;
+  if(!user_id) {
+    res.end('You need to be logged in on the website!\n');
+  } else {
+    urlDatabase[id].longURL = newLongURL;
+    res.redirect('/urls');
+  }
+
 });
 
 app.post("/urls/:id/delete", (req, res) => {
   const { id } = req.params;
-  delete urlDatabase[id];
-  res.redirect('/urls');
+  const { user_id } = req.cookies;
+  if(!user_id) {
+    res.end('You need to be logged in on the website!\n');
+  } else {
+    delete urlDatabase[id];
+    res.redirect('/urls');
+  }
 });
 
 app.post("/login", (req, res) => {
