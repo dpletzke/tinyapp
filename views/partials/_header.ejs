@@ -11,7 +11,7 @@
       </div>
       <% if (user) { %>
         <form class="nav-item form-inline" action="/logout" method="POST">
-          <label for="logout" class="navbar-text" style="margin-right: 1em;">You →<span style='color: white; margin-left: 0.5em;'> <%= user.email %></span></label>
+          <label for="logout" class="navbar-text" style="margin-right: 1em;">Hi,<span style='color: white; margin-left: 0.5em;'> <%= user.email %></span></label>
           <button type="submit" class="navbar-text btn btn-outline-dark border-0">Logout</button>
         </form>
       <% } else { %>
