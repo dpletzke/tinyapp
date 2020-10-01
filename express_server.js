@@ -90,6 +90,7 @@ app.post("/login", (req, res) => {
     res.cookie('user_id', user.id);
     res.redirect('/urls');
   } else {
+    res.statusCode = 403;
     res.redirect('/login');
   }
   
