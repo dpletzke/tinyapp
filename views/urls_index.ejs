@@ -11,35 +11,46 @@
 <body>
   <%- include('partials/_header') %>
   <main style="margin: 1em;">
-    <h3>My URLs</h3>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Short URL</th>
-          <th scope="col">Long URL</th>
-          <th scope="col">Edit</th>
-          <th scope="col">Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for(let url in userURLs) { %>
+    <% if (!user) { %>
+      <div class="jumbotron">
+        <h1 class="display-4">Welcome to TinyApp!</h1>
+        <p class="lead">When you're here, you're family</p>
+        <hr class="my-4">
+        <p>It's a URL shortener created by Dan Pletzke with Express.js and Bootstrap for the Lighthouse Labs Bootcamp. To get started <strong>register</strong> or <strong>login</strong>.</p>
+        <a class="btn btn-outline-dark border-3 btn-lg" href="/login" role="button">Login</a>
+        <a class="btn btn-outline-dark border-0 btn-lg" href="/register" role="button">Register</a>
+      </div>
+    <% } else { %>
+      <h3>My URLs</h3>
+      <table class="table">
+        <thead>
           <tr>
-            <td><%= url %></td>
-            <td><%= userURLs[url].longURL %></td>
-            <td>
-              <form method="GET" action="/urls/<%= url %>">
-                <button type="submit" class="btn btn-outline-warning">Edit</button>
-              </form>
-            </td>
-            <td>
-              <form method="POST" action="/urls/<%= url %>/delete">
-                <button type="submit" class="btn btn-outline-danger">Delete</button>
-              </form>
-            </td>
+            <th scope="col">Short URL</th>
+            <th scope="col">Long URL</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
           </tr>
-        <% } %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% for(let url in userURLs) { %>
+            <tr>
+              <td><%= url %></td>
+              <td><%= userURLs[url].longURL %></td>
+              <td>
+                <form method="GET" action="/urls/<%= url %>">
+                  <button type="submit" class="btn btn-outline-warning">Edit</button>
+                </form>
+              </td>
+              <td>
+                <form method="POST" action="/urls/<%= url %>/delete">
+                  <button type="submit" class="btn btn-outline-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    <% } %>
   </main>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

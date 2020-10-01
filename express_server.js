@@ -54,11 +54,13 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("register");
+  const { user_id } = req.cookies;
+  res.render("register", { user: users[user_id] });
 });
 
 app.get("/login", (req, res) => {
-  res.render("login");
+  const { user_id } = req.cookies;
+  res.render("login", { user: users[user_id] });
 });
 
 app.get("/urls/:shortURL", (req, res) => {
