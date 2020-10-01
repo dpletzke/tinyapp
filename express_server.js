@@ -3,7 +3,7 @@ const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
-const { emailLookup, generateRandomString } = require('./helpers');
+const { emailLookup, generateRandomString, urlsForUser } = require('./helpers');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
@@ -18,6 +18,8 @@ const users = {
 }
 
 const urlDatabase = {
+  example1: { longURL: "https://www.tsn.ca", userID: "user1" },
+  example2: { longURL: "https://www.google.ca", userID: "user1" }
 };
 
 app.get("/", (req, res) => {
@@ -25,19 +27,25 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  const { user_id } = req.cookies;
+  const userURLs = urlsForUser(urlDatabase, users[user_id]);
   const templateVars = {
-    user: users[req.cookies.user_id],
-    urls: urlDatabase    
+    user: users[user_id],
+    userURLs    
   };
+  console.log();
+  console.log();
+  console.log();
+  console.log('users::',users);
+  console.log('urlDatabase::',urlDatabase);
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  console.log(req.cookies.user_id);
-  if (!req.cookies.user_id) {
+  const { user_id } = req.cookies;
+  if (!user_id) {
     res.redirect('/login');
   } else {
-    const user_id = req.cookies.user_id;
     const templateVars = {
       user: users[user_id],
     };
@@ -54,36 +62,43 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const user_id = req.cookies.user_id;
+  const { user_id } = req.cookies;
+  const { shortURL } = req.params;
+  const longURL = urlDatabase[shortURL].longURL;
   const user = users[user_id];
 
   const templateVars = {
-    user: user, 
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL]
+    user, 
+    shortURL,
+    longURL,
   };
   res.render("urls_show", templateVars);
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL];
+  const { shortURL } = req.params;
+  const longURL = urlDatabase[shortURL].longURL;
   res.redirect(longURL);
 });
 
 app.post("/urls", (req, res) => {
+  const { user_id: userID } = req.cookies; 
   const newShortCode = generateRandomString();
-  urlDatabase[newShortCode] = req.body.longURL;
+  const { longURL } = req.body;
+  urlDatabase[newShortCode] = { longURL, userID }
   res.redirect('/urls');
 });
 
 app.post("/urls/:id", (req, res) => {
-  urlDatabase[req.params.id] = req.body.longURL;
+  const { longURL: newLongURL } = req.body;
+  const { id } = req.params
+  urlDatabase[id].longURL = newLongURL;
   res.redirect('/urls');
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase[req.params.id];
+  const { id } = req.params;
+  delete urlDatabase[id];
   res.redirect('/urls');
 });
 

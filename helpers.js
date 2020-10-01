@@ -1,3 +1,18 @@
+const urlsForUser = (urlsDatabase, user) => {
+  const output = {};
+  if(!user) {
+    return null;
+  }
+  for (url in urlsDatabase) {
+    const urlOwner = urlsDatabase[url].userID;
+    if(urlOwner === user.id) {
+      output[url] = urlsDatabase[url]; 
+    }
+  }
+  return output;
+
+}
+
 const emailLookup = (users, email) => {
   for (user in users) {
     if (users[user].email === email) {
@@ -15,4 +30,18 @@ const generateRandomString = () => {
   }
 }
 
-module.exports = { emailLookup, generateRandomString }
+const testUser = {
+  id: 'aJ48lW',
+  email: 'user@example.com',
+  password: 'purple-monkey-dinosaur'
+};
+
+const testURLs = {
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+};
+
+
+// console.log(urlsForUser(testURLs,testUser));
+
+module.exports = { emailLookup, generateRandomString, urlsForUser }
