@@ -125,7 +125,7 @@ app.post("/login", (req, res) => {
   const user = users[emailLookup(users, email)];
 
   if (user && bcrypt.compareSync(password, user.hashedPassword)) {
-    req.session['user_id'] = user.id;
+    req.session.user_id = user.id;
     res.redirect('/urls');
   } else {
     res.statusCode = 403;
@@ -151,7 +151,7 @@ app.post("/register", (req, res) => {
   } else {
     const randId = generateRandomString();
     users[randId] = { id: randId, email, hashedPassword };
-    res.cookie('user_id', randId);
+    req.session.user_id = randId;
     res.redirect('/urls');
   }
 
