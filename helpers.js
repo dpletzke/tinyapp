@@ -3,7 +3,7 @@ const urlsForUser = (urlsDatabase, user) => {
   if (!user) {
     return null;
   }
-  for (url in urlsDatabase) {
+  for (const url in urlsDatabase) {
     const urlOwner = urlsDatabase[url].userID;
     if (urlOwner === user.id) {
       output[url] = urlsDatabase[url];
@@ -14,7 +14,7 @@ const urlsForUser = (urlsDatabase, user) => {
 };
 
 const emailLookup = (users, email) => {
-  for (user in users) {
+  for (const user in users) {
     if (users[user].email === email) {
       return users[user];
     }
