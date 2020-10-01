@@ -35,8 +35,8 @@ app.get("/urls", (req, res) => {
   };
   console.log();
   console.log();
-  console.log();
   console.log('users::',users);
+  console.log();
   console.log('urlDatabase::',urlDatabase);
   res.render("urls_index", templateVars);
 });
