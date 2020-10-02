@@ -24,11 +24,16 @@ const users = {
 
 const urlDatabase = {
   example1: { longURL: "https://www.tsn.ca", userID: "user1" },
-  example2: { longURL: "https://www.google.ca", userID: "user1" }
 };
 
 app.get("/", (req, res) => {
-  res.redirect("/urls");
+  const { user_id } = req.session;
+  console.log(':::', user_id);
+  if(user_id) {
+    res.redirect("/urls");
+  } else {
+    res.redirect('/login');
+  }
 });
 
 app.get("/urls", (req, res) => {
@@ -71,14 +76,22 @@ app.get("/login", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   const { user_id } = req.session;
   const { shortURL } = req.params;
-  const longURL = urlDatabase[shortURL].longURL;
-  const user = users[user_id];
-
   const templateVars = {
-    user,
-    shortURL,
-    longURL,
-  };
+    user: users[user_id],
+    error: null
+  }
+  const urlOwner = urlDatabase[shortURL] ? urlDatabase[shortURL].userID : null;
+
+  if (!user_id) {
+    templateVars.error = 'You must be logged in to view this page!'; 
+  } else if (!urlOwner || (urlOwner !== user_id)){
+    templateVars.error = `This url doesn't exist or it isn't yours!`;
+  } else {
+    const longURL = urlDatabase[shortURL].longURL;
+    const user = users[user_id];
+    templateVars.shortURL = shortURL;
+    templateVars.longURL = longURL;
+  }
   res.render("urls_show", templateVars);
 });
 
@@ -142,7 +155,7 @@ app.post("/logout", (req, res) => {
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 10);
-  if (!email && !hashedPassword) {
+  if (!email || !hashedPassword) {
     res.statusCode = 400;
     res.redirect('/register');
   } else if (emailLookup(users, email)) {
