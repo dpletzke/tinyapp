@@ -28,7 +28,6 @@ const urlDatabase = {
 
 app.get("/", (req, res) => {
   const { user_id } = req.session;
-  console.log(':::', user_id);
   if(user_id) {
     res.redirect("/urls");
   } else {
@@ -43,11 +42,6 @@ app.get("/urls", (req, res) => {
     user: users[user_id],
     userURLs
   };
-  console.log();
-  console.log();
-  console.log('users::',users);
-  console.log();
-  console.log('urlDatabase::',urlDatabase);
   res.render("urls_index", templateVars);
 });
 
@@ -65,12 +59,12 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/register", (req, res) => {
   const { user_id } = req.session;
-  res.render("register", { user: users[user_id] });
+  res.render("register", { user: users[user_id], error: null });
 });
 
 app.get("/login", (req, res) => {
   const { user_id } = req.session;
-  res.render("login", { user: users[user_id] });
+  res.render("login", { user: users[user_id], error: null });
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -136,13 +130,14 @@ app.post("/urls/:id/delete", (req, res) => {
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
   const user = users[emailLookup(users, email)];
+  const { user_id } = req.session;
 
   if (user && bcrypt.compareSync(password, user.hashedPassword)) {
     req.session.user_id = user.id;
     res.redirect('/urls');
   } else {
     res.statusCode = 403;
-    res.redirect('/login');
+    res.render("login", { user: users[user_id], error: 'Error wrong credentials!' });
   }
   
 });
@@ -154,13 +149,14 @@ app.post("/logout", (req, res) => {
 
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
+  const { user_id } = req.session;
   const hashedPassword = bcrypt.hashSync(password, 10);
-  if (!email || !hashedPassword) {
+  if (!email || !password) {
     res.statusCode = 400;
-    res.redirect('/register');
+    res.render("register", { user: users[user_id], error: 'Fill out the whole thing!' });
   } else if (emailLookup(users, email)) {
     res.statusCode = 400;
-    res.redirect('/register');
+    res.render("register", { user: users[user_id], error: 'Account already exists!' });
   } else {
     const randId = generateRandomString();
     users[randId] = { id: randId, email, hashedPassword };
@@ -172,6 +168,6 @@ app.post("/register", (req, res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+  console.log(`TinyApp listening on port ${PORT}!`);
 });
 

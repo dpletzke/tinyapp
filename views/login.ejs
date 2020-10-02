@@ -15,6 +15,7 @@
     <form action="/login" method="POST">
       <div class="form-group mb-2">
         <label for="login">Enter your information below:</label>
+        <% if (error) {%><div class="text-danger"><%= error %><% } %>
         <input class="form-control" type="email" name="email" placeholder="Email" style="width: 300px; margin: 1em">
         <input class="form-control" type="password" name="password" placeholder="Password" style="width: 300px; margin: 1em">
         <button type="submit" class="btn btn-primary">Login</button>
