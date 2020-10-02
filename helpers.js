@@ -34,19 +34,4 @@ const generateRandomString = () => {
   }
 };
 
-const testUser = {
-  id: 'aJ48lW',
-  email: 'user@example.com',
-  password: 'purple-monkey-dinosaur'
-};
-
-const testURLs = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" },
-  fhgklf: { longURL: "https://www.youtube.ca", userID: "asknkd" }
-};
-
-
-// console.log(urlsForUser(testURLs,testUser));
-
 module.exports = { emailLookup, generateRandomString, urlsForUser };

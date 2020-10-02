@@ -55,11 +55,11 @@ You will build an HTTP Server that handles requests from the browser (client). A
         *   (Stretch) the number of times the short URL was visited
         *   (Stretch) the number of unique visits for the short URL
     *   if a URL for the given ID does not exist:
-        *   (Minor) **returns HTML with a relevant error message**
+        *   <s>(Minor) returns HTML with a relevant error message
     *   if user is not logged in:
-        *   **returns HTML with a relevant error message**
+        *   returns HTML with a relevant error message
     *   if user is logged it but does not own the URL with the given ID:
-        *   **returns HTML with a relevant error message**
+        *   returns HTML with a relevant error message</s>
 *   `GET /u/:id`
 
     *   <s>if URL for the given ID exists:
@@ -114,13 +114,13 @@ You will build an HTTP Server that handles requests from the browser (client). A
         *   sets a cookie
         *   redirects to `/urls`</s>
     *   if email and password params don't match an existing user:
-        *   **returns HTML with a relevant error message**
+        *   returns HTML with a relevant error message
 *   `POST /register`
 
-    *   if email or password are empty:
-        *   **returns HTML with a relevant error message**
+    *   <s>if email or password are empty:
+        *   returns HTML with a relevant error message
     *   if email already exists:
-        *   **returns HTML with a relevant error message**
+        *   returns HTML with a relevant error message</s>
     *   otherwise:
         *  <s> creates a new user
         *   encrypts the new user's password with `bcrypt`
